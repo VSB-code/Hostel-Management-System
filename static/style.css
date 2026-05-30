@@ -1,0 +1,146 @@
+/* ==========================================
+   NIT DURGAPUR HOSTEL ROOM MATRIX STYLES
+   ========================================== */
+
+:root {
+    --primary-blue: #1e3a8a;
+    --success-green: #10b981;
+    --danger-red: #ef4444;
+    --warning-amber: #f59e0b;
+    --light-bg: #f8fafc;
+    --border-color: #e2e8f0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    margin: 0;
+    color: #334155;
+}
+
+.main-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.main-header nav a {
+    color: #93c5fd;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 600;
+}
+
+.main-header nav a.active, .main-header nav a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.hostel-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.hostel-header-bar {
+    background-color: #f1f5f9;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.hostel-header-bar h3 {
+    margin: 0;
+    color: var(--primary-blue);
+    font-size: 1.35rem;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: #e2e8f0;
+}
+
+.rooms-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.rooms-table th, .rooms-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rooms-table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.room-pill {
+    background-color: #dbeafe;
+    color: #1e40af;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+/* Status Indicator Color Mapping */
+.status-label {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-available { background-color: #d1fae5; color: #065f46; }
+.status-full { background-color: #fee2e2; color: #991b1b; }
+.status-maintenance { background-color: #fef3c7; color: #92400e; }
+
+/* Progress Capacity Bar System */
+.capacity-container {
+    width: 200px;
+}
+.capacity-text {
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+.progress-bar-bg {
+    background-color: #e2e8f0;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-bar-fill { height: 100%; width: 0; transition: width 0.3s ease; }
+.fill-available { background-color: var(--success-green); }
+.fill-full { background-color: var(--danger-red); }
+.fill-maintenance { background-color: var(--warning-amber); }
+
+.main-footer {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 4rem;
+    border-top: 1px solid var(--border-color);
+}

@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NIT Durgapur | Hostel Allocation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Animated background orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            animation: float 20s infinite ease-in-out;
+        }
+        .orb1 { width: 400px; height: 400px; background: #00b4db; top: -100px; left: -100px; }
+        .orb2 { width: 500px; height: 500px; background: #ff6a88; bottom: -150px; right: -150px; animation-delay: -5s; }
+        .orb3 { width: 300px; height: 300px; background: #f9d423; top: 40%; left: 70%; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.05); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main card grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 0.9fr;
+            gap: 2rem;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Left side: Form Card */
+        .form-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #1e2a3a;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .sub {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            border-left: 3px solid #ffd700;
+            padding-left: 0.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+        input:focus {
+            border-color: #ffd700;
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 0 8px rgba(255,215,0,0.4);
+        }
+        input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, #ffd700, #ffb347);
+            border: none;
+            border-radius: 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #1e2a3a;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            transform: scale(0.98);
+            background: linear-gradient(90deg, #ffc107, #ff9f2e);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .flash-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            text-align: center;
+            animation: fadeIn 0.4s;
+        }
+        .success { background: #28a745cc; color: white; border-left: 5px solid #ffd700; }
+        .error { background: #dc3545cc; color: white; border-left: 5px solid #ffaa00; }
+        .info { background: #17a2b8cc; color: white; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Right side: Stats Preview */
+        .stats-card {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 0.7rem;
+        }
+        .stats-header h3 {
+            font-weight: 600;
+        }
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: auto;
+            padding: 0 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hostel-item {
+            background: rgba(255,255,255,0.05);
+            margin-bottom: 1rem;
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: 0.2s;
+        }
+        .hostel-name {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            height: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #ffd700;
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        .stats-numbers {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #ddd;
+        }
+        .total-beds {
+            margin-top: 1rem;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.5);
+            padding: 0.6rem;
+            border-radius: 2rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+            h2 { font-size: 1.6rem; }
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: #ffd700;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="container">
+    <div class="dashboard">
+        <!-- LEFT: FORM -->
+        <div class="form-card">
+            <span class="badge">🏆 NIT Durgapur • Official</span>
+            <h2>Hostel Allocation<br>System</h2>
+            <div class="sub">Smart seat assignment • First come first serve</div>
+
+            <form id="allocationForm">
+                <div class="input-group">
+                    <label>📘 Student Roll Number</label>
+                    <input type="text" id="student_id" placeholder="e.g., 24CS1001" required>
+                </div>
+                <div class="input-group">
+                    <label>👤 Full Name</label>
+                    <input type="text" id="student_name" placeholder="Your full name" required>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span>✨</span> Request Room Allocation
+                </button>
+                <div id="messageArea"></div>
+            </form>
+        </div>
+        
+        <nav>
+      <a href="/">Home</a>
+      <a href="/status">Occupancy</a>
+      <a href="/rooms">Rooms</a>
+      <a href="/admin/login">Admin</a>
+      <a href="/admin/dashboard">Admin Dashboard</a>
+     </nav>
+
+
+        <!-- RIGHT: LIVE OCCUPANCY -->
+        <div class="stats-card">
+            <div class="stats-header">
+                <h3>🏘️ Live Occupancy Status</h3>
+                <button class="refresh-btn" id="refreshStats">⟳</button>
+            </div>
+            <div id="statsContainer">
+                <div style="text-align:center; color:white;">Loading data...</div>
+            </div>
+            <div class="total-beds" id="totalSummary"></div>
+        </div>
+    </div>
+    <footer>🔒 Data secured • Real-time allocation • Hostels: Hall 11 || Hall 14 || Hall 2 || Hall 4 </footer>
+</div>
+
+<script>
+    // Helper to fetch occupancy stats
+    async function fetchOccupancy() {
+        try {
+            const response = await fetch('/api/occupancy');
+            const data = await response.json();
+            if (data.success) {
+                renderStats(data.stats);
+            } else {
+                document.getElementById('statsContainer').innerHTML = '<div style="color:#ffaaaa;">Failed to load stats</div>';
+            }
+        } catch (err) {
+            document.getElementById('statsContainer').innerHTML = '<div style="color:#ffaaaa;">Network error</div>';
+        }
+    }
+
+    function renderStats(stats) {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = '';
+        let totalBeds = 0, totalOccupied = 0;
+        stats.forEach(hostel => {
+            totalBeds += hostel.total_beds;
+            totalOccupied += hostel.occupied_beds;
+            const percent = (hostel.occupied_beds / hostel.total_beds) * 100;
+            const hostelDiv = document.createElement('div');
+            hostelDiv.className = 'hostel-item';
+            hostelDiv.innerHTML = `
+                <div class="hostel-name">
+                    <span>🏛️ ${hostel.hostel_name}</span>
+                    <span>${hostel.occupied_beds}/${hostel.total_beds}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percent}%;"></div>
+                </div>
+                <div class="stats-numbers">
+                    <span>✅ Available: ${hostel.available_beds}</span>
+                    <span>🧑‍🎓 Occupied: ${hostel.occupied_beds}</span>
+                </div>
+            `;
+            container.appendChild(hostelDiv);
+        });
+        const totalPercent = (totalOccupied / totalBeds) * 100;
+        document.getElementById('totalSummary').innerHTML = `
+            📊 Overall: ${totalOccupied} / ${totalBeds} beds filled (${totalPercent.toFixed(1)}%)
+        `;
+    }
+
+    // Submit form via AJAX
+    const form = document.getElementById('allocationForm');
+    const messageDiv = document.getElementById('messageArea');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const student_id = document.getElementById('student_id').value.trim();
+        const student_name = document.getElementById('student_name').value.trim();
+
+        if (!student_id || !student_name) {
+            showMessage('❌ Please fill all fields', 'error');
+            return;
+        }
+
+        // Show loading
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="loader"></span> Processing...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch('/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ student_id, student_name })
+            });
+            const text = await response.text();
+            // Simple detection of success/error from response text
+            if (text.includes('✅') || text.includes('Success')) {
+                showMessage(text, 'success');
+                document.getElementById('student_id').value = '';
+                document.getElementById('student_name').value = '';
+                fetchOccupancy();  // refresh stats
+            } else if (text.includes('❌') || text.includes('Error') || text.includes('full')) {
+                showMessage(text, 'error');
+            } else {
+                showMessage(text, 'info');
+            }
+        } catch (err) {
+            showMessage('Network error. Please try again.', 'error');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    function showMessage(msg, type) {
+        messageDiv.innerHTML = `<div class="flash-message ${type}">${msg}</div>`;
+        setTimeout(() => {
+            if (messageDiv.firstChild) messageDiv.firstChild.remove();
+        }, 5000);
+    }
+
+    document.getElementById('refreshStats').addEventListener('click', fetchOccupancy);
+    fetchOccupancy(); // initial load
+    setInterval(fetchOccupancy, 15000); // auto-refresh every 15 sec
+</script>
+</body>
+</html>

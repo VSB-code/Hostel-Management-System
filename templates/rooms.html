@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIT Durgapur - Room Occupancy Grid</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>NIT Durgapur Hostel Room Management Console</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Student Booking</a> | 
+            <a href="{{ url_for('status_page') }}">Live Status Counter</a> |
+            <a href="{{ url_for('rooms_page') }}" class="active">Room Matrix Explorer</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Real-Time Room Allocation Explorer Matrix</h2>
+            <p>Displaying multi-tier structured room allocation metrics across available campus facilities.</p>
+        </section>
+
+        {% for hostel_name, rooms in grouped_rooms.items() %}
+        <div class="hostel-card">
+            <div class="hostel-header-bar">
+                <h3>🏢 {{ hostel_name }}</h3>
+                <span class="badge total-badge">Total Registered Rooms: {{ rooms|length }}</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="rooms-table">
+                    <thead>
+                        <tr>
+                            <th>Room Index ID</th>
+                            <th>Room Number</th>
+                            <th>Floor Level</th>
+                            <th>Current Configuration Status</th>
+                            <th>Occupancy Sizing Allocation Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for room in rooms %}
+                        <tr>
+                            <td><strong>#{{ room.room_id }}</strong></td>
+                            <td><span class="room-pill">{{ room.room_number }}</span></td>
+                            <td>Floor {{ room.floor_number }}</td>
+                            <td>
+                                <span class="status-label status-{{ room.status.lower() }}">
+                                    {{ room.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="capacity-container">
+                                    <span class="capacity-text">{{ room.occupied_count }} / {{ room.capacity }} Beds Filled</span>
+                                    <div class="progress-bar-bg">
+                                        {% set percentage = (room.occupied_count / room.capacity) * 100 %}
+                                        <div class="progress-bar-fill fill-{{ room.status.lower() }}" style="width: {{ percentage }}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 NIT Durgapur Core Management Systems Lab. Engineered by Virendra Singh.</p>
+    </footer>
+
+</body>
+</html>

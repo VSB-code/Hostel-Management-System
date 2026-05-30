@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIT Durgapur | Hostel Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #0b1a2e 0%, #0f212f 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            color: #ffd966;
+            margin-bottom: 0.5rem;
+        }
+        .subhead {
+            color: #ccc;
+            margin-bottom: 2rem;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        th {
+            background: #ffd96620;
+            color: #ffd966;
+            font-weight: 600;
+        }
+        .progress {
+            background: #2c3e2f;
+            border-radius: 20px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #ffd966;
+            height: 100%;
+            border-radius: 20px;
+        }
+        .badge-full {
+            background: #dc3545;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+        .badge-avail {
+            background: #28a745;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            background: #ffd966;
+            color: #1e2a3a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            background: #ffc107;
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>📊 Detailed Hostel Occupancy</h1>
+        <div class="subhead">Real-time seat matrix • NIT Durgapur Hostel Management</div>
+        <div id="statsTable">
+            <p style="color:white;">Loading data...</p>
+        </div>
+        <a href="/" class="back-btn">← Back to Allocation Portal</a>
+    </div>
+</div>
+<script>
+    async function loadFullStats() {
+        const res = await fetch('/api/occupancy');
+        const data = await res.json();
+        if (!data.success) {
+            document.getElementById('statsTable').innerHTML = '<p style="color:red;">Failed to load stats</p>';
+            return;
+        }
+        let html = `<table>
+            <thead><tr><th>Hostel</th><th>Total Rooms</th><th>Total Beds</th><th>Occupied</th><th>Available</th><th>Occupancy Rate</th></tr></thead><tbody>`;
+        data.stats.forEach(h => {
+            const rate = ((h.occupied_beds / h.total_beds)*100).toFixed(1);
+            const badge = h.available_beds === 0 ? '<span class="badge-full">FULL</span>' : '<span class="badge-avail">AVAILABLE</span>';
+            html += `<tr>
+                <td><strong>${h.hostel_name}</strong> ${badge}</td>
+                <td>${h.total_rooms}</td>
+                <td>${h.total_beds}</td>
+                <td>${h.occupied_beds}</td>
+                <td>${h.available_beds}</td>
+                <td><div class="progress"><div class="progress-fill" style="width: ${rate}%;"></div></div> ${rate}%</td>
+            </tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('statsTable').innerHTML = html;
+    }
+    loadFullStats();
+</script>
+</body>
+</html>

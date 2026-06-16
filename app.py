@@ -8,15 +8,13 @@ import re
 import os
 from dotenv import load_dotenv
 
-
-load_dotenv()
-
 app = Flask(__name__)
 app.secret_key = 'your-super-secret-key-change-this-in-production'  
 
+load_dotenv()
+
 # --------------------- Database Connection ---------------------
 def get_db_connection():
-
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
         user=os.getenv("DB_USER"),

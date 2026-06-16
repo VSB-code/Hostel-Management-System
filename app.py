@@ -5,18 +5,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import re
 
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = 'your-super-secret-key-change-this-in-production'  
 
 # --------------------- Database Connection ---------------------
 def get_db_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="vsnit@08",      
-        database="hostel_management"       
-    )
 
+    return mysql.connector.connect(
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME")
+    )
+    
 # --------------------- Helper Functions ---------------------
 def is_valid_roll_number(roll):
     # NIT Durgapur ke typical roll format: 24CS1001

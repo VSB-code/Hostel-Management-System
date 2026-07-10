@@ -233,9 +233,3 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 ```
 
 ---
-
-### Notes for You:
-- Replace placeholders like `your-username`, `your-profile`, and the author details with your own.
-- Add actual screenshots if you have them – the README can include image links.
-- If you're using a different cloud MySQL (like Aiven), mention it in deployment section.
-- The README is designed to be impressive to interviewers – it shows a clear understanding of architecture, security, and deployment.

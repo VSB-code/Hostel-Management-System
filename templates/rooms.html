@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIT Durgapur - Room Occupancy Grid</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Add search/filter styles */
+        .controls-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .controls-bar input,
+        .controls-bar select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 14px;
+        }
+        .controls-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+    </style>
 </head>
 <body>
 
     <header class="main-header">
         <h1>NIT Durgapur Hostel Room Management Console</h1>
         <nav>
-            <a href="{{ url_for('index') }}">Student Booking</a> | 
-            <a href="{{ url_for('status_page') }}">Live Status Counter</a> |
-            <a href="{{ url_for('rooms_page') }}" class="active">Room Matrix Explorer</a>
+            <a href="{{ url_for('student.index') }}">Student Booking</a> |
+            <a href="{{ url_for('student.status_page') }}">Live Status Counter</a> |
+            <a href="{{ url_for('student.rooms_page') }}" class="active">Room Matrix Explorer</a>
         </nav>
     </header>
 
@@ -23,8 +44,23 @@
             <p>Displaying multi-tier structured room allocation metrics across available campus facilities.</p>
         </section>
 
+        <!-- Search & Filter Controls -->
+        <div class="controls-bar">
+            <input type="text" id="roomSearch" placeholder="🔍 Search room number...">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="available">AVAILABLE</option>
+                <option value="full">FULL</option>
+                <option value="maintenance">MAINTENANCE</option>
+            </select>
+            <select id="hostelFilter">
+                <option value="">All Hostels</option>
+                <!-- Will be populated by backend if needed -->
+            </select>
+        </div>
+
         {% for hostel_name, rooms in grouped_rooms.items() %}
-        <div class="hostel-card">
+        <div class="hostel-card" data-hostel="{{ hostel_name }}">
             <div class="hostel-header-bar">
                 <h3>🏢 {{ hostel_name }}</h3>
                 <span class="badge total-badge">Total Registered Rooms: {{ rooms|length }}</span>
@@ -71,8 +107,10 @@
     </main>
 
     <footer class="main-footer">
-        <p>&copy; 2026 NIT Durgapur Core Management Systems Lab. Engineered by Virendra Singh.</p>
+        <p>&copy; 2026 NIT Durgapur Core Management Systems Lab.</p>
     </footer>
 
+    <!-- Add external JS -->
+    <script src="{{ url_for('static', filename='js/rooms.js') }}"></script>
 </body>
 </html>

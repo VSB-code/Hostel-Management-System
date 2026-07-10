@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIT Durgapur - Students Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .controls input, .controls select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #2a5298; color: white; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-active { background: #28a745; color: white; }
+        .status-vacated { background: #6c757d; color: white; }
+        .status-none { background: #ffc107; color: black; }
+        .nav-links { margin-bottom: 20px; }
+        .nav-links a { margin-right: 15px; color: #2a5298; text-decoration: none; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="{{ url_for('student.index') }}">🏠 Home</a>
+            <a href="{{ url_for('student.status_page') }}">📊 Status</a>
+            <a href="{{ url_for('student.rooms_page') }}">🏘️ Rooms</a>
+            <a href="{{ url_for('admin.admin_dashboard') }}">👨‍💼 Admin Dashboard</a>
+        </div>
+
+        <div class="card">
+            <div class="header">
+                <h2>📚 All Students</h2>
+                <div class="controls">
+                    <input type="text" id="studentSearch" placeholder="🔍 Search by name or roll...">
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="VACATED">Vacated</option>
+                        <option value="NONE">Not Allocated</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Current Status</th>
+                            <th>Allocated Room</th>
+                            <th>Allocated On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td><strong>{{ student.student_id }}</strong></td>
+                            <td>{{ student.student_name }}</td>
+                            <td>{{ student.email or '-' }}</td>
+                            <td>
+                                {% if student.allocation_status == 'ACTIVE' %}
+                                    <span class="status-badge status-active">ACTIVE</span>
+                                {% elif student.allocation_status == 'VACATED' %}
+                                    <span class="status-badge status-vacated">VACATED</span>
+                                {% else %}
+                                    <span class="status-badge status-none">NOT ALLOCATED</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if student.room_number %}
+                                    {{ student.hostel_name }} - Room {{ student.room_number }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ student.allocated_at.strftime('%Y-%m-%d %H:%M') if student.allocated_at else '-' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6">No students found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/students.js') }}"></script>
+</body>
+</html>

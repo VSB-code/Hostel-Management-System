@@ -3,6 +3,7 @@
 <head>
     <title>Admin Dashboard</title>
     <style>
+        /* Your existing styles remain exactly the same */
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f6f9; }
         .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
         .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -49,8 +50,8 @@
                     <td>{{ a.floor_number or '-' }}</td>
                     <td>{{ a.allocated_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>
-                        <form method="post" action="/admin/vacate/{{ a.allocation_id }}" style="display:inline;">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Vacate this room?')">Vacate</button>
+                        <form class="vacate-form" method="post" action="/admin/vacate/{{ a.allocation_id }}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Vacate</button>
                         </form>
                     </td>
                 </tr>
@@ -63,11 +64,14 @@
     
     <div class="card">
         <h3>⚠️ Danger Zone</h3>
-        <form method="post" action="/admin/reset_all" onsubmit="return confirm('RESET ALL ALLOCATIONS? Type YES to confirm');">
-            <input type="text" name="confirm" placeholder='Type "YES" to confirm reset' required>
+        <form id="resetForm" method="post" action="/admin/reset_all">
+            <input type="text" id="resetConfirm" name="confirm" placeholder='Type "YES" to confirm reset' required>
             <button type="submit" class="btn btn-warning" style="margin-top:10px;">Reset Entire System</button>
         </form>
     </div>
 </div>
+
+<!-- Remove inline script, add external -->
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 </body>
 </html>

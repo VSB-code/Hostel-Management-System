@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIT Durgapur - Allocations History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .controls input, .controls select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; }
+        .controls button { padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #2a5298; color: white; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-active { background: #28a745; color: white; }
+        .status-vacated { background: #6c757d; color: white; }
+        .nav-links { margin-bottom: 20px; }
+        .nav-links a { margin-right: 15px; color: #2a5298; text-decoration: none; }
+        .nav-links a:hover { text-decoration: underline; }
+        .export-btn { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .export-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="{{ url_for('student.index') }}">🏠 Home</a>
+            <a href="{{ url_for('student.status_page') }}">📊 Status</a>
+            <a href="{{ url_for('student.rooms_page') }}">🏘️ Rooms</a>
+            <a href="{{ url_for('admin.admin_dashboard') }}">👨‍💼 Admin Dashboard</a>
+            <a href="{{ url_for('admin.students_page') }}">👨‍🎓 Students</a>
+        </div>
+
+        <div class="card">
+            <div class="header">
+                <h2>📋 All Allocations History</h2>
+                <div class="controls">
+                    <input type="text" id="allocationSearch" placeholder="🔍 Search student...">
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="VACATED">Vacated</option>
+                    </select>
+                    <button id="exportCSV" class="export-btn">📥 Export CSV</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="allocations-table">
+                    <thead>
+                        <tr>
+                            <th>Allocation ID</th>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Hostel</th>
+                            <th>Room No</th>
+                            <th>Status</th>
+                            <th>Allocated At</th>
+                            <th>Vacated At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alloc in allocations %}
+                        <tr>
+                            <td>#{{ alloc.allocation_id }}</td>
+                            <td>{{ alloc.student_id }}</td>
+                            <td>{{ alloc.student_name }}</td>
+                            <td>{{ alloc.hostel_name }}</td>
+                            <td>{{ alloc.room_number }}</td>
+                            <td>
+                                <span class="status-badge status-{{ alloc.status.lower() }}">
+                                    {{ alloc.status }}
+                                </span>
+                            </td>
+                            <td>{{ alloc.allocated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ alloc.vacated_at.strftime('%Y-%m-%d %H:%M') if alloc.vacated_at else '-' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="8">No allocations found</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/allocations.js') }}"></script>
+</body>
+</html>

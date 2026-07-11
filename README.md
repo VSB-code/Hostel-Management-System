@@ -1,4 +1,4 @@
-```markdown
+
 # 🏠 NIT Durgapur Hostel Allocation System
 
 [![Made with Flask](https://img.shields.io/badge/Made%20with-Flask-blue)](https://flask.palletsprojects.com/)
@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 > **A full‑stack hostel seat allocation system designed for NIT Durgapur's 4 hostels (400 rooms).**  
-> Built with Flask, MySQL, and a modular architecture – features real‑time occupancy tracking, admin dashboard, and ACID transactions to ensure data integrity.
+> Built with Flask, MySQL, and a modular architecture – features real‑time occupancy tracking, an admin dashboard, and ACID transactions to ensure data integrity.
 
 ---
 
@@ -31,14 +31,14 @@
   - Track room capacity, occupied count, and floor number.
 
 - **Data Integrity**
-  - ACID transactions for allocation/vacate operations – prevents double‑booking.
+  - ACID transactions for allocation/vacate operations – prevent double‑booking.
   - Foreign key constraints for referential integrity.
   - Allocation history preserved with `ACTIVE` / `VACATED` status and timestamps.
 
 - **Scalable Architecture**
   - Blueprint‑based modular routing.
-  - Service layer separates business logic from controllers.
-  - Environment‑variable configuration for easy deployment.
+  - The service layer separates business logic from controllers.
+  - Environment variable configuration for easy deployment.
 
 ---
 
@@ -105,9 +105,8 @@ hostel-management/
     ├── admin_dashboard.html
     ├── rooms.html
     └── status.html
-```
 
----
+
 
 ## 🚀 Local Setup
 
@@ -227,7 +226,6 @@ hostel-management/
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
----
 
 > **Built with ❤️ for the hostel management needs of NIT Durgapur.**
 ```

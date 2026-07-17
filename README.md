@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 # Hostel Management System
+=======
+
+# 🏠 NIT Durgapur Hostel Allocation System
+>>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
 
 A Flask-based Hostel Management System that automates room allocation, occupancy tracking, and hostel administration using MySQL. The system follows a First-Come-First-Serve (FCFS) room allocation strategy and provides both student-facing and admin-facing functionality.
 
+<<<<<<< HEAD
 ## Features
 
 ### Student Features
@@ -30,6 +36,10 @@ A Flask-based Hostel Management System that automates room allocation, occupancy
 * REST API endpoints
 * Dynamic occupancy tracking
 * Error handling and transaction support
+=======
+> **A full‑stack hostel seat allocation system designed for NIT Durgapur's 4 hostels (400 rooms).**  
+> Built with Flask, MySQL, and a modular architecture – features real‑time occupancy tracking, an admin dashboard, and ACID transactions to ensure data integrity.
+>>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
 
 ---
 
@@ -42,6 +52,7 @@ A Flask-based Hostel Management System that automates room allocation, occupancy
 
 ### Database
 
+<<<<<<< HEAD
 * MySQL
 
 ### Frontend
@@ -54,6 +65,17 @@ A Flask-based Hostel Management System that automates room allocation, occupancy
 
 * Password Hashing
 * Session Authentication
+=======
+- **Data Integrity**
+  - ACID transactions for allocation/vacate operations – prevent double‑booking.
+  - Foreign key constraints for referential integrity.
+  - Allocation history preserved with `ACTIVE` / `VACATED` status and timestamps.
+
+- **Scalable Architecture**
+  - Blueprint‑based modular routing.
+  - The service layer separates business logic from controllers.
+  - Environment variable configuration for easy deployment.
+>>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
 
 ---
 
@@ -70,6 +92,7 @@ hostel_management_system/
 │   └── style.css           # Custom Structural Component UI Style Rules
 │
 └── templates/
+<<<<<<< HEAD
     ├── index.html          # Student Registration Portal & Booking Viewport
     ├── status.html         # Live Macro Metrics Summary Grid Dashboard
     ├── rooms.html          # Deep-Dive Structural Micro-Room Matrix View
@@ -135,11 +158,19 @@ admin_id
 username
 password_hash
 ```
+=======
+    ├── index.html
+    ├── admin_login.html
+    ├── admin_dashboard.html
+    ├── rooms.html
+    └── status.html
+>>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
 
----
+
 
 ## Room Allocation Workflow
 
+<<<<<<< HEAD
 ```text
 Student submits form
         │
@@ -314,3 +345,126 @@ The newly introduced `/rooms` component extracts flat query matrices from the re
 Virendra Singh
 
 Computer Science Student | Python Developer | Flask Enthusiast
+=======
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/hostel-management.git
+   cd hostel-management
+   ```
+
+2. **Create & activate virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate      # Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up MySQL**
+   - Create a database: `CREATE DATABASE hostel_management;`
+   - Run `database/schema.sql` to create tables.
+   - Run `database/seed.sql` to populate hostels, rooms, and default admin.
+   - (Optional) Generate admin password hash:
+     ```python
+     from werkzeug.security import generate_password_hash
+     print(generate_password_hash("admin123"))
+     ```
+     Insert that hash into `Admins` table.
+
+5. **Configure environment**
+   - Copy `.env.example` to `.env` and fill in your DB credentials:
+     ```env
+     DB_HOST=localhost
+     DB_USER=root
+     DB_PASSWORD=your_password
+     DB_NAME=hostel_management
+     SECRET_KEY=your-secret-key
+     DEBUG=True
+     ```
+
+6. **Run the application**
+   ```bash
+   python app.py
+   ```
+   Visit `http://127.0.0.1:5000` – the student form is ready.
+
+7. **Admin login**
+   - Go to `/admin/login`
+   - Default credentials: `admin` / `admin123` (as per seed data).
+
+---
+
+## 🌐 Deployment (Render)
+
+1. Push code to GitHub.
+2. On Render, create a new Web Service and connect your repository.
+3. Add the following environment variables in Render dashboard:
+   - `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (use a cloud MySQL like Aiven or Clever Cloud).
+   - `SECRET_KEY`
+   - (No need to set `DEBUG` in production)
+4. Render will automatically detect `Procfile` and run:
+   ```
+   web: gunicorn app:create_app()
+   ```
+
+---
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | `/` | Student allocation form |
+| POST   | `/book` | Allocate room (form data: `student_id`, `student_name`) |
+| GET    | `/api/occupancy` | JSON: occupancy stats per hostel |
+| GET    | `/status` | Full page with detailed stats |
+| GET    | `/rooms` | Rooms grouped by hostel |
+| GET    | `/admin/login` | Admin login page |
+| POST   | `/admin/login` | Admin login form submit |
+| GET    | `/admin/logout` | Logout admin |
+| GET    | `/admin/dashboard` | Admin dashboard (protected) |
+| POST   | `/admin/vacate/<id>` | Vacate an allocation (protected) |
+| POST   | `/admin/reset_all` | Reset all allocations (protected, requires confirmation) |
+
+---
+
+## 🧪 Testing & Concurrency
+
+- **Concurrency handled** – MySQL transactions with `START TRANSACTION` and row‑level locking ensure that simultaneous booking requests do not double‑allocate a room.
+- **Atomic operations** – Allocation and room update are performed in a single transaction; on error, a rollback restores consistency.
+
+---
+
+## 🔮 Future Improvements
+
+- ✅ Email notifications to students on allocation.
+- ✅ Waitlist system when all rooms are full.
+- ✅ Student preferences (choose hostel) with priority.
+- ✅ Bulk import/export of student data (CSV).
+- ✅ Room maintenance scheduling.
+- ✅ Audit logs for admin actions.
+- ✅ Caching (Redis) for occupancy stats to reduce DB load.
+
+---
+
+## 👨‍💻 Author
+
+**Virendra Singh**  
+- [GitHub](https://github.com/VSB-code)  
+- [LinkedIn](https://www.linkedin.com/in/virendra-singh-752864409/)  
+- Project built as a semester/mini project for **NIT Durgapur** – demonstrates full‑stack engineering, database design, and scalable architecture.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+
+> **Built with ❤️ for the hostel management needs of NIT Durgapur.**
+```
+
+---
+>>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf

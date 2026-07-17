@@ -1,4 +1,5 @@
 from models.db import get_db_connection
+from services.student_service import create_or_update_student
 from werkzeug.security import generate_password_hash
 import re
 
@@ -37,11 +38,13 @@ def allocate_room(roll_number, student_name):
             """, (roll_number, f"{roll_number}@nitdgp.ac.in", default_password))
             user_id = cursor.lastrowid
             
-            # Create student profile
-            cursor.execute("""
-                INSERT INTO Students (student_id, roll_number, full_name, email)
-                VALUES (%s, %s, %s, %s)
-            """, (user_id, roll_number, student_name, f"{roll_number}@nitdgp.ac.in"))
+            # Create or update student profile
+            create_or_update_student(
+                user_id,
+                student_name,
+                roll_number=roll_number,
+                email=f"{roll_number}@nitdgp.ac.in"
+            )
         
         # 2. Find available room
         cursor.execute("""

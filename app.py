@@ -6,6 +6,7 @@ def create_app():
     """Application Factory Pattern"""
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.secret_key = Config.SECRET_KEY
     
     # Register all blueprints (routes)
     register_blueprints(app)

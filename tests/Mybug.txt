@@ -1,0 +1,7 @@
+ During testing, I encountered two main issues:
+
+Flask JSON serialization failed on MySQL Decimal values – I converted them to Python floats before returning JSON.
+
+MySQL lock timeout errors during allocation – I moved the student profile creation outside the transaction, which eliminated deadlocks.
+
+Now the system handles concurrent booking requests reliably, and the API returns consistent JSON responses. I've also added retry logic for transient database errors to make the system more robust."

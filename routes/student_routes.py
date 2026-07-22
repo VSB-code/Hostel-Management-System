@@ -1,3 +1,4 @@
+from decimal import Decimal
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from services.allocation_service import allocate_room
 from services.student_service import is_valid_roll_number
@@ -13,7 +14,7 @@ def index():
 
 @student_bp.route('/book', methods=['POST'])
 def book_room():
-    roll_number = request.form.get('student_id', '').strip()  # roll number from form
+    roll_number = request.form.get('student_id', '').strip()
     student_name = request.form.get('student_name', '').strip()
     
     if not roll_number or not student_name:
@@ -22,10 +23,6 @@ def book_room():
         return "❌ Invalid roll number format (e.g., 24CS1001)", 400
 
     try:
-        # allocate_room will handle:
-        # 1. Check if user exists in Users table, if not create one with role='student'
-        # 2. Check/update Students profile
-        # 3. Allocate room
         success, message, _ = allocate_room(roll_number, student_name)
         if success:
             return message, 200
@@ -40,7 +37,6 @@ def status_page():
 
 @student_bp.route('/api/occupancy')
 def api_occupancy():
-    # Same as before, doesn't touch Users table
     from models.db import get_db_connection
     from mysql.connector import Error
     conn = get_db_connection()
@@ -58,16 +54,27 @@ def api_occupancy():
             ORDER BY h.hostel_id
         """)
         stats = cursor.fetchall()
-        return jsonify({"success": True, "stats": stats})
+
+        normalized_stats = []
+        for row in stats:
+            normalized_row = {}
+            for key, value in row.items():
+                if isinstance(value, Decimal):
+                    normalized_row[key] = int(value)
+                else:
+                    normalized_row[key] = value
+            normalized_stats.append(normalized_row)
+
+        return jsonify({"success": True, "stats": normalized_stats})
     except Error as e:
         return jsonify({"success": False, "error": str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
+# ⚠️ AGAR TUM room_bp USE KARTE HO TOH ISE DELETE KARDO, NAHI TOH THEEK HAI
 @student_bp.route('/rooms')
 def rooms_page():
-    # Same as before
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:

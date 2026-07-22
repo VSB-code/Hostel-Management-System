@@ -1,351 +1,116 @@
-<<<<<<< HEAD
-# Hostel Management System
-=======
 
 # 🏠 NIT Durgapur Hostel Allocation System
->>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
 
-A Flask-based Hostel Management System that automates room allocation, occupancy tracking, and hostel administration using MySQL. The system follows a First-Come-First-Serve (FCFS) room allocation strategy and provides both student-facing and admin-facing functionality.
+[![Made with Flask](https://img.shields.io/badge/Made%20with-Flask-blue)](https://flask.palletsprojects.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)](https://www.mysql.com/)
+[![Deployed on Render](https://img.shields.io/badge/Deployed%20on-Render-success)](https://render.com)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-<<<<<<< HEAD
-## Features
-
-### Student Features
-
-* Room booking through a simple web interface
-* Roll number validation
-* Automatic room allocation
-* Prevents duplicate active allocations
-* Real-time hostel occupancy status
-
-### Admin Features
-
-* Secure admin login
-* View all active room allocations
-* Vacate allocated rooms
-* Monitor occupancy statistics
-* Reset hostel allocation system
-* Dashboard with summary statistics
-
-### System Features
-
-* Flask backend
-* MySQL database integration
-* Session-based authentication
-* Password hashing using Werkzeug
-* REST API endpoints
-* Dynamic occupancy tracking
-* Error handling and transaction support
-=======
 > **A full‑stack hostel seat allocation system designed for NIT Durgapur's 4 hostels (400 rooms).**  
-> Built with Flask, MySQL, and a modular architecture – features real‑time occupancy tracking, an admin dashboard, and ACID transactions to ensure data integrity.
->>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
+> Built with Flask, MySQL, and a modular architecture – features real‑time occupancy tracking, admin dashboard, and ACID transactions to ensure data integrity.
 
 ---
 
-## Tech Stack
+## ✨ Key Features
 
-### Backend
+- **Student Side**
+  - Request room allocation using college roll number (e.g., `24CS1001`).
+  - Real‑time occupancy stats per hostel (AJAX updates every 15 seconds).
+  - Instant allocation success/failure messages with hostel and room number.
+  - Responsive glass‑morphism UI.
 
-* Python
-* Flask
+- **Admin Side**
+  - Secure login with hashed passwords.
+  - Dashboard showing all active allocations (student, hostel, room, allocated time).
+  - Summary stats: total active students, available/full/maintenance rooms.
+  - Vacate rooms with one click – updates allocation history and room occupancy.
+  - System reset (with confirmation) to clear all allocations.
 
-### Database
+- **Room Management**
+  - View all rooms grouped by hostel with status indicators.
+  - Track room capacity, occupied count, and floor number.
 
-<<<<<<< HEAD
-* MySQL
-
-### Frontend
-
-* HTML
-* CSS
-* JavaScript
-
-### Security
-
-* Password Hashing
-* Session Authentication
-=======
 - **Data Integrity**
-  - ACID transactions for allocation/vacate operations – prevent double‑booking.
+  - ACID transactions for allocation/vacate operations – prevents double‑booking.
   - Foreign key constraints for referential integrity.
   - Allocation history preserved with `ACTIVE` / `VACATED` status and timestamps.
 
 - **Scalable Architecture**
   - Blueprint‑based modular routing.
-  - The service layer separates business logic from controllers.
-  - Environment variable configuration for easy deployment.
->>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
+  - Service layer separates business logic from controllers.
+  - Environment‑variable configuration for easy deployment.
 
 ---
 
+## 🛠 Tech Stack
 
-## 📂 Project Directory Structure
+| Layer         | Technology |
+|---------------|------------|
+| Backend       | Python 3, Flask 3 |
+| Database      | MySQL 8.0 (with `mysql-connector-python`) |
+| Frontend      | HTML5, CSS3 (Glassmorphism), Vanilla JS (Fetch API) |
+| Authentication | Werkzeug (password hashing) |
+| Deployment    | Render (Gunicorn) |
+| Environment   | `python-dotenv` |
 
-```text
-hostel_management_system/
-│
-├── app.py                  # Central Flask Engine & Application Controller Routes
-├── README.md               # Professional Technical Systems Documentation
-│
+---
+
+## 🗄️ Database Schema
+
+**6 Tables** – Normalized with relationships:
+
+- `Hostels` – hostel_id, name, total_rooms.
+- `Rooms` – room_id, hostel_id (FK), room_number, floor, capacity (default 2), occupied_count, status (`AVAILABLE`/`FULL`/`MAINTENANCE`).
+- `Students` – student_id (PK, roll number), name, email.
+- `Admins` – admin_id, username, password_hash.
+- `Allocations` – allocation_id, student_id (FK), room_id (FK), allocated_at, vacated_at, status (`ACTIVE`/`VACATED`).
+
+**Relationships:**  
+- `Rooms` ⟶ `Hostels` (many‑to‑one)  
+- `Allocations` ⟶ `Students` & `Rooms` (many‑to‑one)  
+
+*Check `database/schema.sql` for full DDL.*
+
+---
+
+## 📁 Project Structure
+
+```
+hostel-management/
+├── app.py                 # Flask app factory
+├── config.py              # Configuration from .env
+├── requirements.txt
+├── Procfile               # Gunicorn entry
+├── .env.example           # Environment variables template
+├── database/
+│   ├── schema.sql
+│   └── seed.sql           # Sample data (hostels, rooms, admin)
+├── models/
+│   └── db.py              # get_db_connection()
+├── services/              # Business logic
+│   ├── student_service.py
+│   ├── room_service.py
+│   └── allocation_service.py
+├── routes/                # Blueprints
+│   ├── __init__.py
+│   ├── student_routes.py
+│   ├── admin_routes.py
+│   └── room_routes.py
 ├── static/
-│   └── style.css           # Custom Structural Component UI Style Rules
-│
+│   ├── css/style.css
+│   └── js/main.js
 └── templates/
-<<<<<<< HEAD
-    ├── index.html          # Student Registration Portal & Booking Viewport
-    ├── status.html         # Live Macro Metrics Summary Grid Dashboard
-    ├── rooms.html          # Deep-Dive Structural Micro-Room Matrix View
-    ├── admin_login.html    # Administrative Authentication Entry Panel
-    └── admin_dashboard.html# High-Privilege System Management Workspace
-
-
----
-
-## Database Schema
-
-### Hostels
-
-Stores hostel information.
-
-```sql
-hostel_id
-hostel_name
-```
-
-### Rooms
-
-Stores room details and occupancy.
-
-```sql
-room_id
-hostel_id
-room_number
-floor_number
-capacity
-occupied_count
-status
-```
-
-### Students
-
-Stores student information.
-
-```sql
-student_id
-student_name
-```
-
-### Allocations
-
-Stores room allocations.
-
-```sql
-allocation_id
-student_id
-room_id
-status
-allocated_at
-vacated_at
-```
-
-### Admins
-
-Stores admin login credentials.
-
-```sql
-admin_id
-username
-password_hash
-```
-=======
     ├── index.html
     ├── admin_login.html
     ├── admin_dashboard.html
     ├── rooms.html
     └── status.html
->>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf
-
-
-
-## Room Allocation Workflow
-
-<<<<<<< HEAD
-```text
-Student submits form
-        │
-        ▼
-Validate roll number
-        │
-        ▼
-Check existing allocation
-        │
-        ▼
-Find available room
-        │
-        ▼
-Create allocation
-        │
-        ▼
-Update occupancy
-        │
-        ▼
-Return success message
 ```
 
 ---
 
-## API Endpoints
+## 🚀 Local Setup
 
-### Get Occupancy Statistics
-
-```http
-GET /api/occupancy
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "stats": [
-    {
-      "hostel_id": 1,
-      "hostel_name": "BH-A",
-      "total_rooms": 20,
-      "total_beds": 60,
-      "occupied_beds": 45,
-      "available_beds": 15
-    }
-  ]
-}
-```
-
----
-
-## Installation
-
-### Clone Repository
-
-```bash
-git clone <repository-url>
-cd hostel-management
-```
-
-### Create Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-### Activate Environment
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Linux/Mac:
-
-```bash
-source venv/bin/activate
-```
-
-### Install Dependencies
-
-```bash
-pip install flask
-pip install mysql-connector-python
-pip install werkzeug
-```
-
-### Configure MySQL
-
-Create database:
-
-```sql
-CREATE DATABASE hostel_management;
-```
-
-Import schema and sample data.
-
-### Run Application
-
-```bash
-python app.py
-```
-
-Open:
-
-```text
-http://localhost:5000
-(Running on http://127.0.0.1:5000)
-```
-
----
-
-## Security Features
-
-* Password hashing
-* Session management
-* Login-protected admin routes
-* Input validation
-* SQL parameterized queries
-* Transaction handling
-
----
-
-## Future Improvements
-
-* JWT Authentication
-* Email Notifications
-* Hostel Analytics Dashboard
-* Student Profile Management
-* Room Preference Selection
-* PDF Reports
-* RESTful API Expansion
-* Docker Deployment
-* Cloud Deployment
-
----
-
-## Learning Outcomes
-
-This project demonstrates:
-
-* Flask Routing
-* Jinja Templates
-* MySQL Integration
-* CRUD Operations
-* REST APIs
-* Session Authentication
-* SQL JOINs
-* Aggregation Queries
-* Error Handling
-* Transaction Management
-* Frontend-Backend Communication
-
----
-## 🚀 Key Engineering & Core CS Features
-
-### 1. Concurrency Control & Race Condition Mitigation
-During peak registration hours, multiple student requests might target a single residual room capacity boundary simultaneously. The application backend utilizes atomic SQL transactions. By bundling execution paths inside explicit try-catch blocks backed by `conn.commit()` and handling runtime rollbacks (`conn.rollback()`), the system guarantees **ACID compliance**, preventing double-booking phenomena.
-
-### 2. Linear Memory Optimization ($O(N)$ Parsing)
-The newly introduced `/rooms` component extracts flat query matrices from the relational space via optimized `INNER JOIN` operations and shifts sorting overhead into an in-memory associative array (Python Dictionary) grouping profile. This ensures linear $O(N)$ runtime mapping, avoiding expensive multi-pass loops inside the Jinja2 rendering pipeline.
-
-### 3. Custom Input Stream Validation & Security
-* **Regex Integration:** Roll numbers are statically verified against standard institutional patterns (`r'^\d{2}[A-Z]{2}\d{4}$'`) prior to opening connection pools.
-* **State Protection:** Administrative actions (such as `vacate_room` and `reset_all`) are isolated using custom Python Function Decorators (`@login_required`) interacting with cryptographically secured session headers.
-
----
-
-## Author
-Virendra Singh
-
-Computer Science Student | Python Developer | Flask Enthusiast
-=======
 1. **Clone the repository**
    ```bash
    git clone https://github.com/your-username/hostel-management.git
@@ -451,9 +216,9 @@ Computer Science Student | Python Developer | Flask Enthusiast
 
 ## 👨‍💻 Author
 
-**Virendra Singh**  
-- [GitHub](https://github.com/VSB-code)  
-- [LinkedIn](https://www.linkedin.com/in/virendra-singh-752864409/)  
+**Your Name**  
+- [GitHub](https://github.com/your-username)  
+- [LinkedIn](https://linkedin.com/in/your-profile)  
 - Project built as a semester/mini project for **NIT Durgapur** – demonstrates full‑stack engineering, database design, and scalable architecture.
 
 ---
@@ -462,9 +227,6 @@ Computer Science Student | Python Developer | Flask Enthusiast
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
 
+---
 
 > **Built with ❤️ for the hostel management needs of NIT Durgapur.**
-```
-
----
->>>>>>> 01420ea295ec3f700bba21599871757e25f4ecbf

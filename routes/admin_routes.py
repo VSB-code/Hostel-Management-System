@@ -25,7 +25,6 @@ def admin_login():
         
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        # Query from `Users` table and filter by role = 'admin'
         cursor.execute("""
             SELECT id, username, password_hash, role 
             FROM Users 
@@ -59,7 +58,6 @@ def admin_dashboard():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     
-    # Active allocations (using Users table for student name)
     cursor.execute("""
         SELECT a.allocation_id, a.allocated_at,
                u.username AS student_id, 
@@ -75,7 +73,6 @@ def admin_dashboard():
     """)
     allocations = cursor.fetchall()
     
-    # Summary stats
     cursor.execute("""
         SELECT 
             COUNT(DISTINCT a.student_id) AS total_students,
@@ -89,11 +86,6 @@ def admin_dashboard():
     cursor.close()
     conn.close()
     return render_template('admin_dashboard.html', allocations=allocations, summary=summary)
-
-# ============================================================
-# REST OF THE ROUTES (vacate, reset_all, students, allocations)
-# Stay the same, just update student_id mapping from INT to VARCHAR
-# ============================================================
 
 # -------------------- Vacate Room --------------------
 @admin_bp.route('/vacate/<int:allocation_id>', methods=['POST'])
@@ -154,7 +146,7 @@ def reset_all():
         conn.close()
     return redirect(url_for('admin.admin_dashboard'))
 
-# -------------------- View All Students (Updated) --------------------
+# -------------------- View All Students --------------------
 @admin_bp.route('/students')
 @login_required
 def students_page():
@@ -192,32 +184,3 @@ def students_page():
     cursor.close()
     conn.close()
     return render_template('students.html', students=students)
-
-# -------------------- View All Allocations (Updated) --------------------
-@admin_bp.route('/allocations')
-@login_required
-def allocations_page():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    
-    cursor.execute("""
-        SELECT 
-            a.allocation_id,
-            u.username AS student_id,
-            s.full_name AS student_name,
-            h.hostel_name,
-            r.room_number,
-            a.status,
-            a.allocated_at,
-            a.vacated_at
-        FROM Allocations a
-        JOIN Users u ON a.student_id = u.id
-        JOIN Students s ON u.id = s.student_id
-        JOIN Rooms r ON a.room_id = r.room_id
-        JOIN Hostels h ON r.hostel_id = h.hostel_id
-        ORDER BY a.allocated_at DESC
-    """)
-    allocations = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('allocations.html', allocations=allocations)
